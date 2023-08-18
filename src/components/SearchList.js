@@ -1,8 +1,23 @@
 import {List,ListItem,ListItemText,ListItemAvatar,Avatar,Divider,Paper,ListItemButton,IconButton} from '@mui/material';
 import {StarOutline} from '@mui/icons-material';
-import { useState } from 'react';
+import { makeStyles } from '@mui/styles';
+
+//custom CSS rule for the scrollbar
+const useStyles = makeStyles({
+    paper: {
+      overflowY: 'auto',
+      '&::-webkit-scrollbar': {
+        width: '4px',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+        borderRadius: '2px',
+      },
+    },
+  });
 
 export const SearchList = (props)=>{
+    const classes = useStyles();
 
     const {users,userDispatch} = props
     function handleFav(id){
@@ -19,7 +34,7 @@ export const SearchList = (props)=>{
     }
 
     return (
-        <Paper elevation={3}>
+        <Paper elevation={3} className={classes.paper} style={{ maxHeight: 400, overflow: 'auto' , width : 500 }}>
         <List sx={{margin:'15px'}}>
             {
                 users.map(user=>{
@@ -38,18 +53,14 @@ export const SearchList = (props)=>{
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary={`@${user.login}`}
-                                        // secondary ={(usersBio(user.url) === null) ? 
-                                        //     "" :
-                                        //     `${usersBio(user.url)}`
-                                        // }
+                                        secondary ={user.bio}
                                     />
                                 </ListItemButton>
                                 </ListItem>
                                 <Divider />
                             </ >
                     )
-                })
-                
+                })  
             }
         </List>
         </Paper>

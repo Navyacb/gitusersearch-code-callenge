@@ -3,7 +3,6 @@ import {Search,StarOutline} from '@mui/icons-material';
 import {Paper,InputBase, IconButton, Grid, Divider} from '@mui/material';
 import axios from 'axios'
 import { SearchList } from './SearchList';
-import {usersBio} from '../helpers/utility'
 
 export const SearchModule = (props)=>{
     const [searchText,setSearchText] = useState('')
@@ -25,24 +24,22 @@ export const SearchModule = (props)=>{
         if(searchText.length>2){
             (async function(){
                 try{
-                    const response = await axios.get(`https://api.github.com/search/users?q=${searchText}`,{
+                    const response1 = await axios.get(`https://api.github.com/search/users?q=${searchText}`,{
                     headers:{
                         Authorization : `Bearer ${token}`
                     }});
-                    console.log(response.data.items)
-                    const result = response.data.items.map(item=>{
-                            const userBio = usersBio(item.url)
-                            // usersBio(item.url)
-                            // .then(bio=>{
-                            //     userBio = bio
-                            // })
-                            // .catch(error=>{
-                            //     console.log('error while fetching user bio',error)
-                            // })
-                            return {...item,starColor:'inherit',bio : userBio}
+                    console.log(response1.data.items)
+                    const data = response1.data.items
+                    const result = data.map(async(item)=>{
+                            const response2 = await axios.get(`${item.url}`,{
+                                headers:{
+                                    Authorization : `Bearer ${token}`
+                                }})
+                            return response2.data
                     })
                     console.log('result',result)
-                    userDispatch({type:'CREATE_LIST',payload:result})
+                    const resolvedResults = await Promise.all(result);
+                    userDispatch({type:'CREATE_LIST',payload:resolvedResults})
                 }
                 catch(error){
                     console.log("error while fetching data from git search API",error)
