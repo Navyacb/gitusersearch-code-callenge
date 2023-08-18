@@ -1,41 +1,39 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useContext, useEffect , useState } from 'react';
 import {Search,StarOutline} from '@mui/icons-material';
 import {Paper,InputBase, IconButton, Grid, Divider} from '@mui/material';
 import axios from 'axios'
+import { Link } from 'react-router-dom';
 import { SearchList } from './SearchList';
+import { UserContext } from '../stateManagement/UserContext';
 
 export const SearchModule = (props)=>{
     const [searchText,setSearchText] = useState('')
-    const [users,userDispatch] = useReducer(userReducer,[])
+    const {users,userDispatch} = useContext(UserContext)
 
     function handleSearchChange(e){
         setSearchText(e.target.value)
     }
 
-    function userReducer(state,action){
-        if(action.type === 'CREATE_LIST' || action.type==='UPDATE_USER'){
-            return action.payload
-        }
-    }
-
     useEffect(()=>{
+        console.log('env',process.env.REACT_APP_GITHUB_API_TOKEN)
         const token = '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'
         console.log(process.env.REACT_APP_GITHUB_API_TOKEN)
         if(searchText.length>2){
             (async function(){
                 try{
+                    //fetching the user list based on search result
                     const response1 = await axios.get(`https://api.github.com/search/users?q=${searchText}`,{
                     headers:{
                         Authorization : `Bearer ${token}`
                     }});
-                    console.log(response1.data.items)
                     const data = response1.data.items
                     const result = data.map(async(item)=>{
+                            //fetching complete user details like bio,followers,repo
                             const response2 = await axios.get(`${item.url}`,{
                                 headers:{
                                     Authorization : `Bearer ${token}`
                                 }})
-                            return response2.data
+                            return {...response2.data,starColor:'inherit'}
                     })
                     console.log('result',result)
                     const resolvedResults = await Promise.all(result);
@@ -67,13 +65,15 @@ export const SearchModule = (props)=>{
                             value={searchText}
                             onChange={handleSearchChange}
                         />
-                        <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-                            <StarOutline />
-                        </IconButton>
+                        <Link to='/favorites'>
+                            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                                <StarOutline />
+                            </IconButton>
+                        </Link>
                     </Paper>
                 </Paper>
                 <Divider />
-                {(users.length>0) && <SearchList users={users} userDispatch={userDispatch} />}
+                {(users.length>0) && <SearchList/>}
             </Grid>
     )
 }
