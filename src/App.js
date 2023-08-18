@@ -18,10 +18,8 @@ function App() {
 
   function favUserReducer(state,action){
     if(action.type === 'ADD_FAV'){
-      alert('1')
       return [...state,action.payload]
     }else if(action.type === 'REMOVE_FAV'){
-      alert('2')
       return action.payload
     }else{
       return state

@@ -16,7 +16,7 @@ export const SearchModule = (props)=>{
 
     useEffect(()=>{
         console.log('env',process.env.REACT_APP_GITHUB_API_TOKEN)
-        const token = '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'
+        const token = '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'
         console.log(process.env.REACT_APP_GITHUB_API_TOKEN)
         if(searchText.length>2){
             (async function(){
@@ -55,7 +55,7 @@ export const SearchModule = (props)=>{
             >
                 <Paper sx={{width:'inherit',textAlign:'center' }}>
                     <Paper component="form"  elevation={0}>
-                        <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                        <IconButton type="button" sx={{ p: '10px' }} aria-label="search"  edge="start">
                             <Search/>
                         </IconButton>
                         <InputBase
@@ -66,7 +66,7 @@ export const SearchModule = (props)=>{
                             onChange={handleSearchChange}
                         />
                         <Link to='/favorites'>
-                            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                            <IconButton type="button" sx={{ p: '10px' }} aria-label="star"  edge="end">
                                 <StarOutline />
                             </IconButton>
                         </Link>

@@ -14,7 +14,7 @@ export const ListUsers = (props)=>{
         const result = users.map(user=>{
             if(user.id === id){
                 const color = (user.starColor === 'inherit') ? ('yellow') : ('inherit')
-                toggleFavorite(user)
+                toggleFavorite({...user,...{starColor : color}})
                 return {...user,...{starColor : color}}
             }else{
                 return {...user}
