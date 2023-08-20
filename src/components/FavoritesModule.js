@@ -1,4 +1,4 @@
-import {Paper,Divider,Grid,IconButton} from '@mui/material';
+import {Paper,Divider,Grid,IconButton,Typography} from '@mui/material';
 import { FavoritesList } from './FavoritesList';
 import { useContext } from 'react';
 import { FavUserContext } from '../stateManagement/FavUserContext';
@@ -22,7 +22,7 @@ export const FavoritesModule = (props)=>{
                         <ArrowBack/>
                     </IconButton>
                 </Link>
-                Favorites
+                <Typography variant='p'>Favorites</Typography>
                 <IconButton type="button" sx={{ p: '10px' }} aria-label="star">
                     <StarOutline sx={{color:'yellow'}} />
                 </IconButton>

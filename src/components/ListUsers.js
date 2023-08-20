@@ -5,19 +5,30 @@ import { UserContext } from '../stateManagement/UserContext';
 import { FavUserContext } from '../stateManagement/FavUserContext';
 import { Link } from 'react-router-dom';
 import { addRemoveFavUtility } from '../helper/addRemoveFavUtility';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export const ListUsers = (props)=>{
-    const {items} = props
+    // ,hasMore,loadUsers
+    const {items,hasMore,loadUsers} = props
     const {users,userDispatch} = useContext(UserContext)
     const {favUsers,favUserDispatch} = useContext(FavUserContext)
 
+    console.log('item',items)
+    console.log('showMore',hasMore)
     return (
             <List sx={{margin:'15px'}}>
+                <InfiniteScroll
+                dataLength={items.length}
+                next={loadUsers}
+                hasMore={hasMore}
+                loader={<h4>Loading...</h4>}
+                endMessage={<p>No more users to display.</p>}
+                >
                 {
-                    items.map(item=>{
+                    items.map((item,index)=>{
                         return (
-                                <>
-                                    <ListItem key={item.id}
+                                <div key={index}>
+                                    <ListItem
                                         secondaryAction={
                                             <IconButton type="button" onClick={()=>{addRemoveFavUtility(item.id,users,userDispatch,favUsers,favUserDispatch)}} sx={{ p: '10px'}} aria-label="search">
                                                 <StarOutline style={{ color: item.starColor }}  />
@@ -37,10 +48,11 @@ export const ListUsers = (props)=>{
                                     </Link>
                                     </ListItem>
                                     <Divider />
-                                </>
+                                </div>
                         )
                     })  
                 }
+                </InfiniteScroll>
         </List>
     )
 }

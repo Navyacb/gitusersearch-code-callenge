@@ -6,13 +6,17 @@ import {FavUserContext} from './stateManagement/FavUserContext'
 import { SearchTextContext } from './stateManagement/SearchTextContext';
 
 function App() {
+  
   const [users,userDispatch] = useReducer(userReducer,[])
   const [favUsers,favUserDispatch] = useReducer(favUserReducer,[])
   const [searchText,searchTextDispatch] = useReducer(searchTextReducer,[])
 
   function userReducer(state,action){
-    if(action.type === 'CREATE_LIST' || action.type==='UPDATE_LIST'){
+    if(action.type==='UPDATE_LIST'){
         return action.payload
+    }else if(action.type === 'CREATE_LIST'){
+      console.log('update',[...state,action.payload])
+        return [...state,...action.payload]
     }else{
       return state
     }
