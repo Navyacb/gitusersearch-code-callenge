@@ -5,37 +5,56 @@ import axios from 'axios'
 import { Link } from 'react-router-dom';
 import { SearchList } from './SearchList';
 import { UserContext } from '../stateManagement/UserContext';
+import { SearchTextContext } from '../stateManagement/SearchTextContext';
+import { FavUserContext } from '../stateManagement/FavUserContext';
+import { TextMessage } from './TextMessage';
 
 export const SearchModule = (props)=>{
-    const [searchText,setSearchText] = useState('')
+    const {searchText,searchTextDispatch} = useContext(SearchTextContext)
     const {users,userDispatch} = useContext(UserContext)
+    const {favUsers} = useContext(FavUserContext)
 
     function handleSearchChange(e){
-        setSearchText(e.target.value)
+        searchTextDispatch({type:'ADD_SEARCH',payload:e.target.value})
     }
 
     useEffect(()=>{
-        console.log('env',process.env.REACT_APP_GITHUB_API_TOKEN)
-        const token = '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'
-        console.log(process.env.REACT_APP_GITHUB_API_TOKEN)
         if(searchText.length>2){
             (async function(){
                 try{
+                    const token = process.env.REACT_APP_GITHUB_API_TOKEN
                     //fetching the user list based on search result
                     const response1 = await axios.get(`https://api.github.com/search/users?q=${searchText}`,{
                     headers:{
                         Authorization : `Bearer ${token}`
                     }});
                     const data = response1.data.items
+                    console.log('data',data)
+                    console.log('search',searchText)
                     const result = data.map(async(item)=>{
                             //fetching complete user details like bio,followers,repo
                             const response2 = await axios.get(`${item.url}`,{
                                 headers:{
                                     Authorization : `Bearer ${token}`
                                 }})
-                            return {...response2.data,starColor:'inherit'}
+                                let favData={};
+                                if(favUsers.length>0){
+                                    favData = favUsers.find(fav=>{
+                                        // console.log('favid',fav.id)
+                                        // console.log('resid',response2.id)
+                                        return fav.id == response2.id
+                                    })
+                                }
+                                // console.log('fav',favData)
+                                if(Object.keys(favData).length>0){
+                                    return {...response2.data,starColor:result.starColor}
+                                }
+                                else{
+                                    return {...response2.data,starColor:'inherit'}
+                                }
+
                     })
-                    console.log('result',result)
+                    // console.log('result',result)
                     const resolvedResults = await Promise.all(result);
                     userDispatch({type:'CREATE_LIST',payload:resolvedResults})
                 }
@@ -43,6 +62,8 @@ export const SearchModule = (props)=>{
                     console.log("error while fetching data from git search API",error)
                 }
             })()
+        }else{
+            userDispatch({type:'UPDATE_LIST',payload:[]})
         }
     },[searchText])
 
@@ -53,7 +74,8 @@ export const SearchModule = (props)=>{
                 justifyContent="center"
                 alignItems="center"
             >
-                <Paper sx={{width:'inherit',textAlign:'center' }}>
+                <Paper sx={{width:'inherit',display: 'flex',justifyContent: 'center',alignItems: 'center',}}>
+                <Paper elevation={0} sx={{width:'500px'}}>
                     <Paper component="form"  elevation={0}>
                         <IconButton type="button" sx={{ p: '10px' }} aria-label="search"  edge="start">
                             <Search/>
@@ -72,8 +94,9 @@ export const SearchModule = (props)=>{
                         </Link>
                     </Paper>
                 </Paper>
+                </Paper>
                 <Divider />
-                {(users.length>0) && <SearchList/>}
+                {(users.length>0) ? <SearchList/> : <TextMessage />} 
             </Grid>
     )
 }

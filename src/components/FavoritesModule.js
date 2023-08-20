@@ -15,8 +15,9 @@ export const FavoritesModule = (props)=>{
                 justifyContent="center"
                 alignItems="center"
             >
-            <Paper sx={{width:'inherit',textAlign:'center' }}>
-                <Link to=''>
+            <Paper sx={{width:'inherit',display: 'flex',justifyContent: 'center',alignItems: 'center',}}>
+            <Paper elevation={0} sx={{width:'500px'}}>
+                <Link to='/'>
                     <IconButton type="button" sx={{ p: '10px' }} aria-label="back">
                         <ArrowBack/>
                     </IconButton>
@@ -25,6 +26,7 @@ export const FavoritesModule = (props)=>{
                 <IconButton type="button" sx={{ p: '10px' }} aria-label="star">
                     <StarOutline sx={{color:'yellow'}} />
                 </IconButton>
+            </Paper>
             </Paper>
             <Divider />
             {(favUsers.length>0) && <FavoritesList/>}
