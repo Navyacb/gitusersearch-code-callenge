@@ -1,4 +1,4 @@
-import { useContext, useEffect , useState } from 'react';
+import { useContext, useEffect } from 'react';
 import {Search,StarOutline} from '@mui/icons-material';
 import {Paper,InputBase, IconButton, Grid, Divider} from '@mui/material';
 import axios from 'axios'
@@ -29,32 +29,29 @@ export const SearchModule = (props)=>{
                         Authorization : `Bearer ${token}`
                     }});
                     const data = response1.data.items
-                    console.log('data',data)
-                    console.log('search',searchText)
-                    const result = data.map(async(item)=>{
+
+                       const result = data.map(async(item)=>{
                             //fetching complete user details like bio,followers,repo
                             const response2 = await axios.get(`${item.url}`,{
                                 headers:{
                                     Authorization : `Bearer ${token}`
                                 }})
-                                let favData={};
+                       
                                 if(favUsers.length>0){
-                                    favData = favUsers.find(fav=>{
-                                        // console.log('favid',fav.id)
-                                        // console.log('resid',response2.id)
-                                        return fav.id == response2.id
+                                    const favData = favUsers.find(fav=>{
+                                        return fav.id === response2.data.id
                                     })
-                                }
-                                // console.log('fav',favData)
-                                if(Object.keys(favData).length>0){
-                                    return {...response2.data,starColor:result.starColor}
-                                }
-                                else{
+                                    if(favData){
+                                        return {...response2.data,starColor:favData.starColor}
+                                    }else{
+                                        return {...response2.data,starColor:'inherit'}
+                                    }
+                                }else{
                                     return {...response2.data,starColor:'inherit'}
                                 }
 
                     })
-                    // console.log('result',result)
+
                     const resolvedResults = await Promise.all(result);
                     userDispatch({type:'CREATE_LIST',payload:resolvedResults})
                 }

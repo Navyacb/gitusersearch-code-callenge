@@ -11,7 +11,6 @@ export const UserModule = (props)=>{
     const user = users.find(user=>{
         return user.id==id
     })
-    console.log('user',user)
 
     return (
         <Grid
