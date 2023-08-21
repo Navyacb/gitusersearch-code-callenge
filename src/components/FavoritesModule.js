@@ -1,12 +1,14 @@
 import {Paper,Divider,Grid,IconButton,Typography} from '@mui/material';
-import { FavoritesList } from './FavoritesList';
 import { useContext } from 'react';
 import { FavUserContext } from '../stateManagement/FavUserContext';
 import { ArrowBack,StarOutline } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import { useStylesUtility } from '../helper/useStylesUtility';
+import { ListUsers } from './ListUsers';
 
 export const FavoritesModule = (props)=>{
     const {favUsers} = useContext(FavUserContext)
+    const classes = useStylesUtility();
 
     return (
         <Grid
@@ -29,7 +31,11 @@ export const FavoritesModule = (props)=>{
             </Paper>
             </Paper>
             <Divider />
-            {(favUsers.length>0) && <FavoritesList/>}
+            {(favUsers.length>0) && (
+                <Paper elevation={3} className={classes.paper}  style={{ maxHeight: 400, overflow: 'auto' , width : 500 }}>
+                    <ListUsers items={favUsers} />
+                </Paper>
+            )}
         </Grid>
     )
 }

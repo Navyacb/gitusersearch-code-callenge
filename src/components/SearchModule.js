@@ -1,26 +1,24 @@
 import { useContext, useEffect, useState } from 'react';
-import {Search,StarOutline} from '@mui/icons-material';
-import {Paper,InputBase, IconButton, Grid, Divider} from '@mui/material';
-import { Link } from 'react-router-dom';
+import {Paper,Grid, Divider} from '@mui/material';
 import { SearchList } from './SearchList';
 import { UserContext } from '../stateManagement/UserContext';
 import { SearchTextContext } from '../stateManagement/SearchTextContext';
 import { FavUserContext } from '../stateManagement/FavUserContext';
 import { TextMessage } from './TextMessage';
 import { searchUserAPI,userDetailsAPI } from '../helper/apiUtility';
+import { ListUsers } from './ListUsers';
+import { useStylesUtility } from '../helper/useStylesUtility';
 
 export const SearchModule = (props)=>{
-    const {searchText,searchTextDispatch} = useContext(SearchTextContext)
+    const {searchText} = useContext(SearchTextContext)
     const {users,userDispatch} = useContext(UserContext)
     const {favUsers} = useContext(FavUserContext)
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-
-    function handleSearch(e){
-        searchTextDispatch({type:'ADD_SEARCH',payload:e.target.value})
-    }
+    const classes = useStylesUtility();
 
     const fetchUsers = async()=>{
+        console.log('fetch')
         try{
             //fetching the user list based on search result
             const response1 = await searchUserAPI(searchText,page)
@@ -74,27 +72,17 @@ export const SearchModule = (props)=>{
                 alignItems="center"
             >
                 <Paper sx={{width:'inherit',display: 'flex',justifyContent: 'center',alignItems: 'center',}}>
-                <Paper elevation={0} sx={{width:'500px'}}>
-                        <IconButton type="button" sx={{ p: '10px' }} aria-label="search"  edge="start">
-                            <Search/>
-                        </IconButton>
-                        <InputBase
-                            sx={{ ml: 1, flex: 1, width:'80%' }}
-                            placeholder="Search GitHUb users..."
-                            inputProps={{ 'aria-label': 'Search GitHUb users...' }}
-                            value={searchText}
-                            onChange={handleSearch}
-                        />
-                        <Link to='/favorites'>
-                            <IconButton type="button" sx={{ p: '10px' }} aria-label="star"  edge="end">
-                                <StarOutline />
-                            </IconButton>
-                        </Link>
-                </Paper>
+                    <SearchList/>
                 </Paper>
                 <Divider />
-                {/* hasMore={hasMore} loadUsers={fetchUsers} */}
-                {(users.length>0) ? <SearchList hasMore={hasMore} loadUsers={fetchUsers} /> : <TextMessage />} 
+                {(users.length>0) ? 
+                (
+                     <Paper elevation={3} className={classes.paper} style={{ maxHeight: 400, overflow: 'auto' , width : 500 }}>
+                        <ListUsers items={users} hasMore={hasMore} loadUsers={fetchUsers} />
+                        {/* hasMore={hasMore} loadUsers={loadUsers} */}
+                    </Paper>
+                ): 
+                <TextMessage />} 
             </Grid>
     )
 }
