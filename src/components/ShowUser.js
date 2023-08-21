@@ -29,19 +29,19 @@ export const ShowUser = (props)=>{
                     <Typography variant="subtitle1" color="text.secondary" component="div">
                         {user.bio}
                     </Typography>
-                    <Box sx={{display:'flex'}} centered>
-                        <box style={{margin:'8px'}}>
+                    <Box sx={{display:'flex'}} centered='true'>
+                        <Box style={{margin:'8px'}}>
                             <Typography variant="h4">{user.followers}</Typography>
                             <Typography>Followers</Typography>
-                        </box>
-                        <box style={{margin:'8px'}}>
+                        </Box>
+                        <Box style={{margin:'8px'}}>
                             <Typography variant="h4">{user.following} </Typography>
                             <Typography>Following</Typography>
-                        </box>
-                        <box style={{margin:'8px'}}>
+                        </Box>
+                        <Box style={{margin:'8px'}}>
                             <Typography variant="h4">{user.public_repos} </Typography>
                             <Typography>Repos</Typography>
-                        </box>
+                        </Box>
 
                     </Box>
                 </CardContent>

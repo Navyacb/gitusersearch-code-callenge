@@ -18,7 +18,6 @@ export const SearchModule = (props)=>{
     const classes = useStylesUtility();
 
     const fetchUsers = async()=>{
-        console.log('fetch')
         try{
             //fetching the user list based on search result
             const response1 = await searchUserAPI(searchText,page)

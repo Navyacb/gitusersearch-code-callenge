@@ -13,17 +13,15 @@ export const ListUsers = (props)=>{
     const {users,userDispatch} = useContext(UserContext)
     const {favUsers,favUserDispatch} = useContext(FavUserContext)
 
-    console.log('item',items)
-    console.log('showMore',hasMore)
     return (
+        <InfiniteScroll
+        dataLength={items.length}
+        next={loadUsers}
+        hasMore={hasMore}
+        loader={<h4>Loading...</h4>}
+        endMessage={<p>No more users to display.</p>}
+        >
             <List sx={{margin:'15px'}}>
-                <InfiniteScroll
-                dataLength={items.length}
-                next={loadUsers}
-                hasMore={hasMore}
-                loader={<h4>Loading...</h4>}
-                endMessage={<p>No more users to display.</p>}
-                >
                 {
                     items.map((item,index)=>{
                         return (
@@ -52,7 +50,7 @@ export const ListUsers = (props)=>{
                         )
                     })  
                 }
-                </InfiniteScroll>
         </List>
+        </InfiniteScroll>
     )
 }

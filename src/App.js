@@ -12,23 +12,24 @@ function App() {
   const [searchText,searchTextDispatch] = useReducer(searchTextReducer,[])
 
   function userReducer(state,action){
-    if(action.type==='UPDATE_LIST'){
+    switch(action.type){
+      case 'UPDATE_LIST':
         return action.payload
-    }else if(action.type === 'CREATE_LIST'){
-      console.log('update',[...state,action.payload])
+      case 'CREATE_LIST':
         return [...state,...action.payload]
-    }else{
-      return state
+      default :
+        throw new Error('Unexpected action type');
     }
   }
 
   function favUserReducer(state,action){
-    if(action.type === 'ADD_FAV'){
-      return [...state,action.payload]
-    }else if(action.type === 'REMOVE_FAV'){
-      return action.payload
-    }else{
-      return state
+    switch(action.type){
+      case 'ADD_FAV':
+        return [...state,action.payload]
+      case 'REMOVE_FAV':
+        return action.payload
+      default :
+        throw new Error('Unexpected action type');
     }
   }
 
