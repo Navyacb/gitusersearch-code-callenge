@@ -15,11 +15,11 @@ export const ListUsers = (props)=>{
 
     return (
         <InfiniteScroll
-        dataLength={items.length}
-        next={loadUsers}
-        hasMore={hasMore}
-        loader={<h4>Loading...</h4>}
-        endMessage={<p>No more users to display.</p>}
+            dataLength={items.length}
+            next={loadUsers}
+            hasMore={hasMore}
+            loader={<h4>Loading...</h4>}
+            endMessage={<p>No more users to display.</p>}
         >
             <List sx={{margin:'15px'}}>
                 {

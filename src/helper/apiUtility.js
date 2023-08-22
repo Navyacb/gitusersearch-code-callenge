@@ -5,7 +5,7 @@ export const searchUserAPI = (searchText,page)=>{
     return axios.get(`https://api.github.com/search/users`, 
     {params: {
         q: searchText,
-        per_page: 15, //loading first 15 search result before scroll
+        per_page: 10, //loading first 10 search result before scroll
         page: page
     },
     headers:{

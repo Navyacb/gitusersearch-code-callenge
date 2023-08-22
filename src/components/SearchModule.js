@@ -16,13 +16,15 @@ export const SearchModule = (props)=>{
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const classes = useStylesUtility();
+    const [text,setText] = useState('')
 
     const fetchUsers = async()=>{
         try{
             //fetching the user list based on search result
             const response1 = await searchUserAPI(searchText,page)
             const data = response1.data.items
-               const result = data.map(async(item)=>{
+            const result = await Promise.all(
+                data.map(async(item)=>{
                     //fetching complete user details like bio,followers,repo
                     const response2 = await userDetailsAPI(item.url)
                
@@ -38,27 +40,34 @@ export const SearchModule = (props)=>{
                         }else{
                             return {...response2.data,starColor:'inherit'}
                         }
-            })
+            }))
 
-            const resolvedResults = await Promise.all(result);
-            userDispatch({type:'CREATE_LIST',payload:resolvedResults}) 
-            setPage(page + 1)
-            setHasMore(resolvedResults.length > 0)   
+            userDispatch({type:'CREATE_LIST',payload:result}) 
+            if (result.length > 0) {
+                setPage((prevPage) => prevPage + 1);
+            }
+            setHasMore(result.length >= 10) 
+            if(result){
+                setText('Loading...')
+            }  else{
+                setText('No Search Results...')
+            }
         }
         catch(error){
             console.log("error while fetching data from git search API",error)
+            setText('No Search Results found...')
         }
     }
 
     useEffect(()=>{
-        setHasMore(true)
-        setPage(1)
-        userDispatch({type:'UPDATE_LIST',payload:[]})
         if(searchText.length>2){
+            setPage(1);
+            userDispatch({ type: 'UPDATE_LIST', payload: [] });
+            setHasMore(true)
             fetchUsers()   
         }else{
             userDispatch({type:'UPDATE_LIST',payload:[]})
-            setHasMore(true)
+            setHasMore(false)
             setPage(1)
         }
     },[searchText])
@@ -76,12 +85,12 @@ export const SearchModule = (props)=>{
                 <Divider />
                 {(users.length>0) ? 
                 (
-                     <Paper elevation={3} className={classes.paper} style={{ maxHeight: 400, overflow: 'auto' , width : 500 }}>
+                     <Paper elevation={3} className={classes.paper} style={{ overflow: 'auto' , width : 500 }}>
                         <ListUsers items={users} hasMore={hasMore} loadUsers={fetchUsers} />
                         {/* hasMore={hasMore} loadUsers={loadUsers} */}
                     </Paper>
                 ): 
-                <TextMessage />} 
+                <TextMessage text={text} />} 
             </Grid>
     )
 }
